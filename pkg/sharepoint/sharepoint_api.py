@@ -42,6 +42,7 @@ def save_file(ctx, file):
         os.makedirs(os.path.dirname(file_dir_path), exist_ok=True)
         with open(file_dir_path, "wb") as f:
             f.write(file_obj)
+        print(f"File {file.serverRelativeUrl} saved successfully")
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
