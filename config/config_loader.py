@@ -39,7 +39,7 @@ class Config:
             dict: The configuration data loaded from the JSON file.
         """
         if cls._config is None:
-            with open(config_file, "r") as file:
+            with open(config_file, "r", encoding="utf-8") as file:
                 cls._config = json.load(file)
         return cls._config
 

@@ -50,5 +50,5 @@ def auth():
         return ctx
 
     except Exception as e:
-        logging.error(f"Error occurred: {e}")
+        logging.error("Error occurred: %s", e)
         raise
