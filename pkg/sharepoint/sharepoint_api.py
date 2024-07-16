@@ -1,10 +1,35 @@
-from config.config_loader import appconfig
-from office365.sharepoint.files.file import File
+"""
+sharepoint_api.py
+
+This module contains functions designed to interact with SharePoint
+to list, download, and save files from the SharePoint site.
+These functions utilize the SharePoint client context object to
+access and manipulate files and folders in the SharePoint environment.
+
+Usage:
+    - Import the necessary functions from this module in any part
+    of the application where SharePoint file operations are required.
+    - The functions in this module provide the ability to list all files
+    and folders, download files, and save files to the local directory.
+
+"""
+
 import os
+from typing import Dict, Any
+from office365.sharepoint.files.file import File
+from config.config_loader import Config
+
+AppConfig: Dict[str, Any] = Config.load_config()
 
 
 def list_all_folders(ctx):
-    relative_url = appconfig["sharepointauth"]["docRelativeUrl"]
+    """
+    list_all_folders
+    This funtion will list all the folders in the SharePoint site primary Directory.
+    Args:
+        ctx: The SharePoint client context object.
+    """
+    relative_url = AppConfig["sharepointauth"]["docRelativeUrl"]
     root_folder = ctx.web.get_folder_by_server_relative_url(relative_url)
     root_folder.expand(["Files", "Folders"]).get().execute_query()
     for files in root_folder.files:
@@ -12,8 +37,14 @@ def list_all_folders(ctx):
 
 
 def list_all_files(ctx):
+    """
+    list_all_files
+    This funtion will list all the files in the SharePoint site.
+    Args:
+        ctx: The SharePoint client context object.
+    """
     try:
-        relative_url = appconfig["sharepointauth"]["docRelativeUrl"]
+        relative_url = AppConfig["sharepointauth"]["docRelativeUrl"]
         root_folder = ctx.web.get_folder_by_server_relative_url(relative_url)
         root_folder.expand(["Files", "Folders"]).get().execute_query()
         files = list(root_folder.files)
@@ -32,12 +63,19 @@ def list_all_files(ctx):
 
 
 def save_file(ctx, file):
+    """
+    save_file
+    This funtion will save the file to the local directory.
+    Args:
+        ctx: The SharePoint client context object.
+        file: The file object to be saved.
+    """
     try:
         parent_dir = file.parent_collection.parent.serverRelativeUrl
         file_n = file.name
         file_obj = File.open_binary(ctx, file.serverRelativeUrl).content
         file_dir_path = (
-            appconfig["app"]["downloadDirectory"] + parent_dir + "/" + file_n
+            AppConfig["app"]["downloadDirectory"] + parent_dir + "/" + file_n
         )
         os.makedirs(os.path.dirname(file_dir_path), exist_ok=True)
         with open(file_dir_path, "wb") as f:
@@ -46,14 +84,21 @@ def save_file(ctx, file):
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
-    return
+    return True
 
 
 def download_all_files(ctx, files):
+    """
+    download_all_files
+    This funtion will download all the files in the SharePoint site.
+    Args:
+        ctx: The SharePoint client context object.
+        files: The list of file objects to be downloaded.
+    """
     try:
         for file in files:
             save_file(ctx, file)
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
-    return
+    return True

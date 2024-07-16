@@ -13,13 +13,22 @@ Usage:
       cached for subsequent access to improve performance and ensure consistency.
 
 """
+
 import json
+from typing import Dict, Any
+
 
 class Config:
+    """
+    Config
+    This class is responsible for loading the configuration data from the
+    specified JSON file and making it available for import across the application.
+    """
+
     _config = None
 
     @classmethod
-    def load_config(cls, config_file='./config/config.json'):
+    def load_config(cls, config_file="./config/config.json") -> Dict[str, Any]:
         """
         Load the configuration from the specified JSON file.
 
@@ -30,9 +39,10 @@ class Config:
             dict: The configuration data loaded from the JSON file.
         """
         if cls._config is None:
-            with open(config_file, 'r') as file:
+            with open(config_file, "r") as file:
                 cls._config = json.load(file)
         return cls._config
 
+
 # Load the configuration once and make it available for import
-appconfig = Config.load_config()
+appconfig: Dict[str, Any] = Config.load_config()

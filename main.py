@@ -12,13 +12,18 @@ Usage:
 
 """
 
-from config.config_loader import appconfig
+import pkg.sharepoint.auth as spauth
 
-import pkg.sharepoint.auth  as spauth
 
 def main():
-  spauth.test()
-  return 
+    """
+    main
+    The main function of the application that initializes the application
+    and starts the main processes or functions.
+
+    """
+    spauth.auth()
+    return
 
 
 if __name__ == "__main__":
