@@ -13,6 +13,7 @@ Usage:
 """
 
 import pkg.sharepoint.auth as spauth
+import pkg.sharepoint.sharepoint_api as spapi
 
 
 def main():
@@ -22,7 +23,11 @@ def main():
     and starts the main processes or functions.
 
     """
-    spauth.auth()
+    ctx=spauth.auth()
+    all_files=spapi.list_all_files()
+    spapi.download_all_files(ctx,all_files)
+
+
     return
 
 

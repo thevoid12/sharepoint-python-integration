@@ -39,7 +39,8 @@ def list_all_folders(ctx):
 def list_all_files(ctx):
     """
     list_all_files
-    This funtion will list all the files in the SharePoint site.
+    This funtion will list all the files in the SharePoint site. We crawl through the folder
+    and subfolders to list all the files
     Args:
         ctx: The SharePoint client context object.
     """
@@ -75,7 +76,8 @@ def save_file(ctx, file):
         file_n = file.name
         file_obj = File.open_binary(ctx, file.serverRelativeUrl).content
         file_dir_path = (
-            AppConfig["app"]["downloadDirectory"] + parent_dir + "/" + file_n
+            os.path.join(AppConfig["app"]["downloadDirectory"],parent_dir,file_n)
+           # AppConfig["app"]["downloadDirectory"] + parent_dir + "/" + file_n
         )
         os.makedirs(os.path.dirname(file_dir_path), exist_ok=True)
         with open(file_dir_path, "wb") as f:
