@@ -7,21 +7,26 @@ hashes for data, compare hashes, and verify data integrity.
 import hashlib
 
 
-def make_hash(data: str) -> str:
+def make_hash(data: bytes | str) -> str:
     """
-    make_hash
-    This function generates a hash for the given data using the SHA-256 algorithm.
+    Generates a SHA-256 hash of the given data. The data can be a string or bytes.
 
     Args:
-        data (str): The input data for which the hash needs to be generated.
+        data (str or bytes): The data to hash.
 
     Returns:
-        str: The hash value generated for the input data.
+        str: The hexadecimal digest of the hash.
     """
+    if isinstance(data, str):
+        # If the data is a string, encode it to bytes
+        data = data.encode("utf-8")
 
-    hash_object = hashlib.sha1(data.encode())
-    hex_dig = hash_object.hexdigest()
-    return hex_dig
+    # Create a SHA-256 hash object
+    hash_obj = hashlib.sha256()
+    # Update the hash object with the data
+    hash_obj.update(data)
+    # Return the hexadecimal digest of the hash
+    return hash_obj.hexdigest()
 
 
 print("Hello, World!".encode(), make_hash("Hello, World!"))

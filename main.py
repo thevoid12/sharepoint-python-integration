@@ -23,10 +23,9 @@ def main():
     and starts the main processes or functions.
 
     """
-    ctx=spauth.auth()
-    all_files=spapi.list_all_files()
-    spapi.download_all_files(ctx,all_files)
-
+    ctx = spauth.auth()
+    all_files = spapi.list_all_files(ctx)
+    spapi.download_all_files(ctx, all_files)
 
     return
 
