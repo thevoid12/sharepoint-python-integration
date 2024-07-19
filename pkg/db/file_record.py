@@ -1,6 +1,6 @@
 import uuid
 from sqlalchemy import create_engine, Column, String, Enum, DateTime, func, CHAR
-from progressEnum import ProgressEnum
+from pkg.db.progressEnum import ProgressEnum
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
