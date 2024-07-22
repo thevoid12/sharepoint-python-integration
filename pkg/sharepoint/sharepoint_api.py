@@ -148,3 +148,31 @@ def download_all_files(ctx, files):
         print(f"Error occurred: {e}")
         raise
     return True
+
+
+def get_changed_files(ctx, files):
+    """
+    get_changed_files
+    This funtion will get the list of files that have been changed in the SharePoint site.
+    Args:
+        ctx: The SharePoint client context object.
+        files: The list of file objects to be checked for changes.
+    """
+    try:
+        changed_files = []
+        fileManager = FileManager()
+        for file in files:
+            current_hash = make_hash(
+                File.open_binary(ctx, file.serverRelativeUrl).content
+            )
+            db_file = fileManager.read_file_record_by_path_and_filename(
+                file.parent_collection.parent.serverRelativeUrl, file.name
+            )
+            if db_file is not None:
+                db_hash = db_file.sha256
+                if current_hash != db_hash:
+                    changed_files.append(file)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        raise
+    return changed_files
