@@ -17,9 +17,9 @@ class FileManager:
         # Create a Session
         self.session = Session()
 
-    def create_file_record(self, path_filename, sha256, progress):
+    def create_file_record(self, path, filename, sha256, progress):
         new_record = FileRecord(
-            path_filename=path_filename, sha256=sha256, progress=progress
+            path=path, filename=filename, sha256=sha256, progress=progress
         )
         self.session.add(new_record)
         self.session.commit()
@@ -32,14 +32,16 @@ class FileManager:
         return self.session.query(FileRecord).filter_by(id=record_id).first()
 
     def update_file_record(
-        self, record_id, path_filename=None, sha256=None, progress=None
+        self, record_id, path=None, filename=None, sha256=None, progress=None
     ):
         record_to_update = (
             self.session.query(FileRecord).filter_by(id=record_id).first()
         )
         if record_to_update:
-            if path_filename:
-                record_to_update.path_filename = path_filename
+            if path:
+                record_to_update.path = path
+            if filename:
+                record_to_update.filename = filename
             if sha256:
                 record_to_update.sha256 = sha256
             if progress:

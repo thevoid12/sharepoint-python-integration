@@ -10,7 +10,8 @@ class FileRecord(Base):
     __tablename__ = "file_records"
 
     id = Column(CHAR(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    path_filename = Column(String, nullable=False)
+    path = Column(String, nullable=False)
+    filename = Column(String, nullable=False)
     sha256 = Column(String, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
@@ -20,7 +21,7 @@ class FileRecord(Base):
 
     def __repr__(self):
         return (
-            f"<FileRecord(id='{self.id}', path_filename='{self.path_filename}', sha256='{self.sha256}', "
+            f"<FileRecord(id='{self.id}', path='{self.path}', filename='{self.filename}', sha256='{self.sha256}', "
             f"created_at='{self.created_at}', updated_at='{self.updated_at}', "
             f"progress='{self.progress.name}')>"
         )
