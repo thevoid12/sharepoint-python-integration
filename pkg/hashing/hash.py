@@ -29,4 +29,5 @@ def make_hash(data: bytes | str) -> str:
     return hash_obj.hexdigest()
 
 
-print("Hello, World!".encode(), make_hash("Hello, World!"))
+if __name__ == "__main__":
+    print("Hello, World!".encode(), make_hash("Hello, World!"))
