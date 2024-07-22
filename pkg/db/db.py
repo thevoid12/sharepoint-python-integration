@@ -31,6 +31,13 @@ class FileManager:
     def read_file_record_by_id(self, record_id):
         return self.session.query(FileRecord).filter_by(id=record_id).first()
 
+    def read_file_record_by_path_and_filename(self, path, filename):
+        return (
+            self.session.query(FileRecord)
+            .filter_by(path=path, filename=filename)
+            .first()
+        )
+
     def update_file_record(
         self, record_id, path=None, filename=None, sha256=None, progress=None
     ):
