@@ -12,14 +12,23 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 
 
+def setup():
+    engine = create_engine("sqlite:///example.db", echo=True)
+    Base.metadata.create_all(engine)
+
+
 class FileManager:
     def __init__(self):
         # Create a Session
         self.session = Session()
 
-    def create_file_record(self, path, filename, sha256, progress):
+    def create_file_record(self, path, filename, sha256, progress, filetype):
         new_record = FileRecord(
-            path=path, filename=filename, sha256=sha256, progress=progress
+            path=path,
+            filename=filename,
+            sha256=sha256,
+            progress=progress,
+            filetype=filetype,
         )
         self.session.add(new_record)
         self.session.commit()
@@ -38,8 +47,17 @@ class FileManager:
             .first()
         )
 
+    def read_all_files_by_filetype(self, filetype):
+        return self.session.query(FileRecord).filter_by(filetype=filetype).all()
+
     def update_file_record(
-        self, record_id, path=None, filename=None, sha256=None, progress=None
+        self,
+        record_id,
+        path=None,
+        filename=None,
+        sha256=None,
+        progress=None,
+        filetype=None,
     ):
         record_to_update = (
             self.session.query(FileRecord).filter_by(id=record_id).first()
@@ -53,6 +71,8 @@ class FileManager:
                 record_to_update.sha256 = sha256
             if progress:
                 record_to_update.progress = progress
+            if filetype:
+                record_to_update.filetype = filetype
             self.session.commit()
         return record_to_update
 

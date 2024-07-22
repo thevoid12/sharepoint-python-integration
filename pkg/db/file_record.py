@@ -14,14 +14,15 @@ class FileRecord(Base):
     filename = Column(String, nullable=False)
     sha256 = Column(String, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, onupdate=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     progress = Column(
         Enum(ProgressEnum), nullable=False, default=ProgressEnum.NOTSTARTED
     )
+    filetype = Column(String, nullable=False)
 
     def __repr__(self):
         return (
             f"<FileRecord(id='{self.id}', path='{self.path}', filename='{self.filename}', sha256='{self.sha256}', "
             f"created_at='{self.created_at}', updated_at='{self.updated_at}', "
-            f"progress='{self.progress.name}')>"
+            f"progress='{self.progress.name}', filetype='{self.filetype}')>"  # Added 'filetype' to the representation
         )
