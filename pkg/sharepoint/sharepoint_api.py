@@ -18,6 +18,9 @@ import os
 from typing import Dict, Any
 from office365.sharepoint.files.file import File
 from config.config_loader import Config
+from pkg.hashing.hash import make_hash
+from pkg.db.db import FileManager
+from pkg.db.progressEnum import ProgressEnum
 
 AppConfig: Dict[str, Any] = Config.load_config()
 
@@ -76,8 +79,11 @@ def save_file(ctx, file):
         file_n = file.name
         file_obj = File.open_binary(ctx, file.serverRelativeUrl).content
         file_dir_path = (
-            os.path.join(AppConfig["app"]["downloadDirectory"],parent_dir,file_n)
-           # AppConfig["app"]["downloadDirectory"] + parent_dir + "/" + file_n
+            # os.path.join(AppConfig["app"]["downloadDirectory"], parent_dir, file_n)
+            AppConfig["app"]["downloadDirectory"]
+            + parent_dir
+            + "/"
+            + file_n
         )
         os.makedirs(os.path.dirname(file_dir_path), exist_ok=True)
         with open(file_dir_path, "wb") as f:
@@ -100,6 +106,44 @@ def force_download_all_files(ctx, files):
     try:
         for file in files:
             save_file(ctx, file)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        raise
+    return True
+
+
+def download_all_files(ctx, files):
+    """
+    download_all_files
+    This funtion will download all the files in the SharePoint site.
+    Args:
+        ctx: The SharePoint client context object.
+        files: The list of file objects to be downloaded.
+    """
+    try:
+
+        fileManager = FileManager()
+        for file in files:
+            current_hash = make_hash(
+                File.open_binary(ctx, file.serverRelativeUrl).content
+            )
+            db_file = fileManager.read_file_record_by_path_and_filename(
+                file.parent_collection.parent.serverRelativeUrl, file.name
+            )
+            if db_file is not None:
+                db_hash = db_file.sha256
+                if current_hash == db_hash:
+                    print(f"File {file.name} is already downloaded")
+                    continue
+                else:
+                    save_file(ctx, file)
+                    fileManager.update_file_record(
+                        fileManager.read_file_record_by_path_and_filename(
+                            file.parent_collection.parent.serverRelativeUrl, file.name
+                        ).id,
+                        sha256=current_hash,
+                        progress=ProgressEnum.COMPLETED,
+                    )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
