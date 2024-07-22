@@ -89,7 +89,7 @@ def save_file(ctx, file):
     return True
 
 
-def download_all_files(ctx, files):
+def force_download_all_files(ctx, files):
     """
     download_all_files
     This funtion will download all the files in the SharePoint site.
