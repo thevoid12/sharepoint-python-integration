@@ -104,7 +104,11 @@ def force_download_all_files(ctx, files):
         files: The list of file objects to be downloaded.
     """
     try:
+        fileManager = FileManager()
         for file in files:
+            current_hash = make_hash(
+                File.open_binary(ctx, file.serverRelativeUrl).content
+            )
             save_file(ctx, file)
     except Exception as e:
         print(f"Error occurred: {e}")
@@ -133,17 +137,31 @@ def download_all_files(ctx, files):
             if db_file is not None:
                 db_hash = db_file.sha256
                 if current_hash == db_hash:
-                    print(f"File {file.name} is already downloaded")
+                    print(f"File {file.name} is unchanged downloaded")
+                    save_file(ctx, file)
                     continue
                 else:
                     save_file(ctx, file)
+                    file_type = file.name.split(".")[-1]
                     fileManager.update_file_record(
                         fileManager.read_file_record_by_path_and_filename(
                             file.parent_collection.parent.serverRelativeUrl, file.name
                         ).id,
                         sha256=current_hash,
                         progress=ProgressEnum.COMPLETED,
+                        filetype=file_type,
                     )
+            else:
+                save_file(ctx, file)
+                file_type = file.name.split(".")[-1]
+                fileManager.create_file_record(
+                    file.parent_collection.parent.serverRelativeUrl,
+                    file.name,
+                    current_hash,
+                    ProgressEnum.COMPLETED,
+                    file_type,
+                )
+
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
@@ -172,6 +190,28 @@ def get_changed_files(ctx, files):
                 db_hash = db_file.sha256
                 if current_hash != db_hash:
                     changed_files.append(file)
+                    save_file(ctx, file)
+                    file_type = file.name.split(".")[-1]
+                    fileManager.update_file_record(
+                        fileManager.read_file_record_by_path_and_filename(
+                            file.parent_collection.parent.serverRelativeUrl, file.name
+                        ).id,
+                        sha256=current_hash,
+                        progress=ProgressEnum.COMPLETED,
+                        filetype=file_type,
+                    )
+            else:
+                changed_files.append(file)
+                save_file(ctx, file)
+                file_type = file.name.split(".")[-1]
+                fileManager.create_file_record(
+                    file.parent_collection.parent.serverRelativeUrl,
+                    file.name,
+                    current_hash,
+                    ProgressEnum.COMPLETED,
+                    file_type,
+                )
+
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
