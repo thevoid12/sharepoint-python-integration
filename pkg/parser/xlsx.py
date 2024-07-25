@@ -6,6 +6,7 @@ Excel files, convert them to csv files, and extract data for analysis.
 
 import openpyxl
 import os
+import csv
 from config.config_loader import Config
 from pkg.db.db import FileManager
 from pkg.db.progressEnum import ProgressEnum
@@ -42,19 +43,19 @@ def convert_to_csv(path, file_name):
     path: The path to the file.
     file_name: The name of the file.
     """
-    final_path = f"{AppConfig["app"]["downloadDirectory"]}{path}{file_name}"
+    final_path = f"{AppConfig["app"]["downloadDirectory"]}{path}/{file_name}"
     os.makedirs(final_path.split('.')[0], exist_ok=True)
     try:
-        wb = openpyxl.load_workbook(final_path)
+        wb = openpyxl.load_workbook(final_path,data_only=True)
         fm = FileManager()
         for sheet_name in wb.sheetnames:
             sheet = wb[sheet_name]
             # Construct a unique CSV file name for each sheet
             csv_file_path = f"{final_path.split('.')[0]}/{sheet_name}.csv"
-            with open(csv_file_path, "w", encoding='utf-8') as csv_file:
-                for row in sheet.iter_rows():
-                    values = [str(cell.value) if cell.value is not None else '' for cell in row]
-                    csv_file.write(",".join(values) + "\n")
+            with open(csv_file_path, "w", encoding='utf-8',newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                for row in sheet.iter_rows(values_only=True):  # Use values_only=True to get calculated values
+                    writer.writerow([str(cell) if cell is not None else '' for cell in row])
                 # print(f"CSV file {csv_file.read()} created successfully")
             with open(csv_file_path, "rb") as csv_file:
                 current_hash = make_hash(csv_file.read())
@@ -125,6 +126,9 @@ def find_csv_type(path, file_name):
 
 def test():
     fm=FileManager()
+    all_xlsx_files = fm.read_all_files_by_filetype("xlsx")
+    for i in all_xlsx_files:
+        convert_to_csv(i.path, i.filename)
     all_csv_files = fm.read_all_files_by_filetype("csv")
     print(all_csv_files)
     for i in all_csv_files:
