@@ -58,6 +58,7 @@ class FileManager:
         sha256=None,
         progress=None,
         filetype=None,
+        csv_type=None,
     ):
         record_to_update = (
             self.session.query(FileRecord).filter_by(id=record_id).first()
@@ -73,6 +74,8 @@ class FileManager:
                 record_to_update.progress = progress
             if filetype:
                 record_to_update.filetype = filetype
+            if csv_type:
+                record_to_update.csv_type = csv_type
             self.session.commit()
         return record_to_update
 

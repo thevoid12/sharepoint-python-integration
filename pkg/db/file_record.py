@@ -1,5 +1,6 @@
 import uuid
 from sqlalchemy import create_engine, Column, String, Enum, DateTime, func, CHAR
+from pkg.db.csv_type import CSVType
 from pkg.db.progressEnum import ProgressEnum
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -18,11 +19,12 @@ class FileRecord(Base):
     progress = Column(
         Enum(ProgressEnum), nullable=False, default=ProgressEnum.DOWNLOADED
     )
+    csv_type = Column(Enum(CSVType), nullable=True)
     filetype = Column(String, nullable=False)
 
     def __repr__(self):
         return (
             f"<FileRecord(id='{self.id}', path='{self.path}', filename='{self.filename}', sha256='{self.sha256}', "
             f"created_at='{self.created_at}', updated_at='{self.updated_at}', "
-            f"progress='{self.progress.name}', filetype='{self.filetype}')>"  # Added 'filetype' to the representation
+            f"progress='{self.progress.name}', filetype='{self.filetype}' , csv_type='{self.csv_type}')>"  # Added 'filetype' to the representation
         )
