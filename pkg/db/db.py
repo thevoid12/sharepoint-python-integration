@@ -50,6 +50,26 @@ class FileManager:
     def read_all_files_by_filetype(self, filetype):
         return self.session.query(FileRecord).filter_by(filetype=filetype).all()
 
+    def update_file_record_from_path_name(
+        self, path, filename, sha256=None, progress=None, filetype=None, csv_type=None
+    ):
+        record_to_update = (
+            self.session.query(FileRecord)
+            .filter_by(path=path, filename=filename)
+            .first()
+        )
+        if record_to_update:
+            if sha256:
+                record_to_update.sha256 = sha256
+            if progress:
+                record_to_update.progress = progress
+            if filetype:
+                record_to_update.filetype = filetype
+            if csv_type:
+                record_to_update.csv_type = csv_type
+            self.session.commit()
+        return record_to_update
+
     def update_file_record(
         self,
         record_id,
