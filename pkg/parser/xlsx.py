@@ -43,7 +43,8 @@ def convert_to_csv(path, file_name):
     path: The path to the file.
     file_name: The name of the file.
     """
-    final_path = f"{AppConfig["app"]["downloadDirectory"]}{path}/{file_name}"
+    final_path = f"{AppConfig["app"]["downloadDirectory"]}/{path}/{file_name}"
+    print(f"Converting {final_path} to CSV...")
     os.makedirs(final_path.split('.')[0], exist_ok=True)
     try:
         wb = openpyxl.load_workbook(final_path,data_only=True)
@@ -61,15 +62,15 @@ def convert_to_csv(path, file_name):
                 current_hash = make_hash(csv_file.read())
             
             print(
-                (path+file_name).split('.')[0],
+                (path+"/"+file_name).split('.')[0],
                 csv_file_path.split('/')[-1],
                 current_hash,
                 ProgressEnum.READYTOPARSE,
-                "csv",
+                "csv"," has been created successfully."
             )
             fm.create_file_record(
                 filename=csv_file_path.split('/')[-1],
-                path=(path+file_name).split('.')[0],
+                path=(path+"/"+file_name).split('.')[0],
                 sha256=current_hash,
                 progress=ProgressEnum.READYTOPARSE,
                 filetype="csv",
@@ -127,8 +128,10 @@ def find_csv_type(path, file_name):
 def test():
     fm=FileManager()
     all_xlsx_files = fm.read_all_files_by_filetype("xlsx")
+    print("All xlsx files:", all_xlsx_files)
     for i in all_xlsx_files:
         convert_to_csv(i.path, i.filename)
+        print(f"{i.path}\t{i.filename}\t{i.csv_type}")
     all_csv_files = fm.read_all_files_by_filetype("csv")
     print(all_csv_files)
     for i in all_csv_files:
