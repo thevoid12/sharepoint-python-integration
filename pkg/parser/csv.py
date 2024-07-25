@@ -118,10 +118,24 @@ def _check_vendor(path, filename):
             print("The file exists.")
         else:
             print("The file does not exist.")
-        # with open(final_path, "r") as f:
-        #     csv_reader = csv.reader(f)
-        #     for row in csv_reader:
-        #         print(row)
+        data=pd.read_csv(final_path,skip_blank_lines=True)
+        # Drop unnecessary rows and colums that have only NaN values
+        data = data.dropna(how='all')
+        data = data.dropna(axis=1, how='all')
+        # Rename the columns for easier access
+        data.columns = ['S_No', 'Documents', 'Comments', 'Status']
+
+        # Drop rows with blank S.No
+        data = data.dropna(subset=['S_No'])
+
+        # Reset the index
+        data.reset_index(drop=True, inplace=True)
+
+        # Find the rows where Status is not "Validated"
+        not_validated_rows = data[data['Status'] != 'Validated']
+
+        print("Rows that are not Validated:")
+        print(not_validated_rows) 
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
