@@ -62,14 +62,14 @@ def convert_to_csv(path, file_name):
                 (path+file_name).split('.')[0],
                 csv_file_path.split('/')[-1],
                 current_hash,
-                ProgressEnum.COMPLETED,
+                ProgressEnum.READYTOPARSE,
                 "csv",
             )
             fm.create_file_record(
                 filename=csv_file_path.split('/')[-1],
                 path=(path+file_name).split('.')[0],
                 sha256=current_hash,
-                progress=ProgressEnum.COMPLETED,
+                progress=ProgressEnum.READYTOPARSE,
                 filetype="csv",
             )
     except Exception as e:

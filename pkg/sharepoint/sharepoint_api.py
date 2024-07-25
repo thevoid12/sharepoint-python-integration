@@ -148,7 +148,7 @@ def download_all_files(ctx, files):
                             file.parent_collection.parent.serverRelativeUrl, file.name
                         ).id,
                         sha256=current_hash,
-                        progress=ProgressEnum.COMPLETED,
+                        progress=ProgressEnum.DOWNLOADED,
                         filetype=file_type,
                     )
             else:
@@ -158,7 +158,7 @@ def download_all_files(ctx, files):
                     file.parent_collection.parent.serverRelativeUrl,
                     file.name,
                     current_hash,
-                    ProgressEnum.COMPLETED,
+                    ProgressEnum.DOWNLOADED,
                     file_type,
                 )
 
@@ -197,7 +197,7 @@ def get_changed_files(ctx, files):
                             file.parent_collection.parent.serverRelativeUrl, file.name
                         ).id,
                         sha256=current_hash,
-                        progress=ProgressEnum.COMPLETED,
+                        progress=ProgressEnum.DOWNLOADED,
                         filetype=file_type,
                     )
             else:
@@ -208,7 +208,7 @@ def get_changed_files(ctx, files):
                     file.parent_collection.parent.serverRelativeUrl,
                     file.name,
                     current_hash,
-                    ProgressEnum.COMPLETED,
+                    ProgressEnum.DOWNLOADED,
                     file_type,
                 )
 

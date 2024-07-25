@@ -9,7 +9,7 @@ def db_test():
         path="/path/to/",
         filename="file.txt",
         sha256="d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2",
-        progress=ProgressEnum.NOTSTARTED,
+        progress=ProgressEnum.DOWNLOADED,
     )
     print(f"Created: {new_record}")
 
@@ -27,7 +27,7 @@ def db_test():
         path="/new/path/to/",
         filename="new_file.txt",
         sha256="e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3",
-        progress=ProgressEnum.INPROGRESS,
+        progress=ProgressEnum.READYTOPARSE,
     )
     print(f"Updated: {updated_record}")
 

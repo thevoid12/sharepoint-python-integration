@@ -16,7 +16,7 @@ class FileRecord(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     progress = Column(
-        Enum(ProgressEnum), nullable=False, default=ProgressEnum.NOTSTARTED
+        Enum(ProgressEnum), nullable=False, default=ProgressEnum.DOWNLOADED
     )
     filetype = Column(String, nullable=False)
 
