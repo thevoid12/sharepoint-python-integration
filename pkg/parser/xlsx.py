@@ -9,6 +9,7 @@ import os
 from config.config_loader import Config
 from pkg.db.db import FileManager
 from pkg.db.progressEnum import ProgressEnum
+from pkg.db.csv_type import CSVType
 from pkg.hashing.hash import make_hash
 AppConfig = Config.load_config()
 
@@ -77,6 +78,57 @@ def convert_to_csv(path, file_name):
         raise
     return True
 
+def find_csv_type(path, file_name):
+    """
+    find_csv_type
+    This function will find the type of the CSV file.
+    Args:
+    path: The path to the file.
+    file_name: The name of the file.
+    """
+    fm=FileManager()
+    try:
+        # print(f"Finding CSV type for {path.split('/')[-1]}{file_name}...")
+        primary_filename = path.split('/')[-1]
+        if primary_filename == "Payroll Validation":
+            print(fm.read_file_record_by_path_and_filename(path, file_name))
+            fm.update_file_record_from_path_name(
+                path=path,
+                filename=file_name,
+                csv_type=CSVType.PAYROLL
+            )
+        if primary_filename == "Vendor Document Checklist":
+            print(fm.read_file_record_by_path_and_filename(path, file_name))
+            fm.update_file_record_from_path_name(
+                path=path,
+                filename=file_name,
+                csv_type=CSVType.VENDOR
+            )
+        if primary_filename == "PO and Invoice Workflow data":
+            print(fm.read_file_record_by_path_and_filename(path, file_name))
+            if file_name == "PO.csv":
+                fm.update_file_record_from_path_name(
+                    path=path,
+                    filename=file_name,
+                    csv_type=CSVType.PO
+                )
+            if file_name == "Invoice.csv":
+                fm.update_file_record_from_path_name(
+                    path=path,
+                    filename=file_name,
+                    csv_type=CSVType.INVOICE
+                )
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        raise
+    return True
 
+def test():
+    fm=FileManager()
+    all_csv_files = fm.read_all_files_by_filetype("csv")
+    print(all_csv_files)
+    for i in all_csv_files:
+        find_csv_type(i.path, i.filename)
+        print(f"{i.path}\t{i.filename}\t{i.csv_type}")
 if __name__ == "__main__":
     read_file("/sites/NAF/Shared Documents/","Book.xlsx")
