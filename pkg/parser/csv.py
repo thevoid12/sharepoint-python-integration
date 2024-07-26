@@ -105,6 +105,7 @@ def _check_PO(path, filename):
             fm.update_file_record_from_path_name(
                 path=path,
                 filename=f"/out{path}",
+                csv_type=CSVType.OUTPUT,
                 sha256=make_hash(open(final_save_path, "rb").read()),
                 progress=ProgressEnum.PARSED,
             )
@@ -169,6 +170,7 @@ def _check_invoice(path, filename):
             fm.update_file_record_from_path_name(
                 path=f"/out{path}",
                 filename=filename,
+                csv_type=CSVType.OUTPUT,
                 sha256=make_hash(open(final_save_path, "rb").read()),
                 progress=ProgressEnum.PARSED,
             )
@@ -228,6 +230,7 @@ def _check_vendor(path, filename):
             fm.update_file_record_from_path_name(
                 path=f"/out{path}",
                 filename=filename,
+                csv_type=CSVType.OUTPUT,
                 sha256=make_hash(open(final_save_path, "rb").read()),
                 progress=ProgressEnum.PARSED,
             )
@@ -284,6 +287,7 @@ def _check_payroll(path, filename):
             fm.update_file_record_from_path_name(
                 path=f"/out{path}",
                 filename=filename,
+                csv_type=CSVType.OUTPUT,
                 sha256=make_hash(open(final_save_path, "rb").read()),
                 progress=ProgressEnum.PARSED,
             )

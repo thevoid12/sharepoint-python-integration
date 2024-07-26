@@ -104,21 +104,27 @@ def find_csv_type(path, file_name):
         # print(f"Finding CSV type for {path.split('/')[-1]}{file_name}...")
         primary_filename = path.split('/')[-1]
         if primary_filename == "Payroll Validation":
-            print(fm.read_file_record_by_path_and_filename(path, file_name))
+            existing_file = fm.read_file_record_by_path_and_filename(path, file_name)
+            print(existing_file)
+            if existing_file.csv_type== CSVType.OUTPUT: return True
             fm.update_file_record_from_path_name(
                 path=path,
                 filename=file_name,
                 csv_type=CSVType.PAYROLL
             )
         if primary_filename == "Vendor Document Checklist":
-            print(fm.read_file_record_by_path_and_filename(path, file_name))
+            existing_file = fm.read_file_record_by_path_and_filename(path, file_name)
+            print(existing_file)
+            if existing_file.csv_type== CSVType.OUTPUT: return True            
             fm.update_file_record_from_path_name(
                 path=path,
                 filename=file_name,
                 csv_type=CSVType.VENDOR
             )
         if primary_filename == "PO and Invoice Workflow data":
-            print(fm.read_file_record_by_path_and_filename(path, file_name))
+            existing_file = fm.read_file_record_by_path_and_filename(path, file_name)
+            print(existing_file)
+            if existing_file.csv_type== CSVType.OUTPUT: return True
             if file_name == "PO.csv":
                 fm.update_file_record_from_path_name(
                     path=path,
