@@ -70,10 +70,31 @@ def _check_PO(path, filename):
             print("The file exists.")
         else:
             print("The file does not exist.")
-        # with open(final_path, "r") as f:
-        #     csv_reader = csv.reader(f)
-        #     for row in csv_reader:
-        #         print(row)
+        data=pd.read_csv(final_path,skip_blank_lines=True)
+
+        # Convert the relevant date columns to datetime
+        data['Created On'] = pd.to_datetime(data['Created On'], format='%d/%m/%Y %I:%M %p')
+        data['Business Approved On'] = pd.to_datetime(data['Business Approved On'])
+        data['Finance Approved On'] = pd.to_datetime(data['Finance Approved On'])
+        data['Treasury Approved On'] = pd.to_datetime(data['Treasury Approved On'])
+
+        # Calculate the time differences
+        data['Business Approval Delay'] = (data['Business Approved On'] - data['Created On']).dt.days
+        data['Finance Approval Delay'] = (data['Finance Approved On'] - data['Created On']).dt.days
+        data['Treasury Approval Delay'] = (data['Treasury Approved On'] - data['Created On']).dt.days
+
+        # Find the rows where Business Approval is not T+3 and Finance Approval is not T+5
+        not_satisfied = data[
+        (data['Business Approval Delay'] > 3) |
+        (data['Finance Approval Delay'] > 5) |
+        (data['Treasury Approval Delay'] > 6)
+        ]
+        if not not_satisfied.empty:
+            print("Rows where any approval delay does not meet the specified criteria:")
+            print(not_satisfied[['Vendor ID', 'Vendor Name', 'Created On', 'Business Approved On', 'Business Approval Delay', 'Finance Approved On', 'Finance Approval Delay', 'Treasury Approved On', 'Treasury Approval Delay']])
+        else:
+            print("All approval delays meet the specified criteria.")
+
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
