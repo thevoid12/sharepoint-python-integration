@@ -11,6 +11,8 @@ import pandas as pd
 from pkg.db.csv_type import CSVType
 from pkg.db.db import FileManager
 from config.config_loader import Config
+from pkg.db.progressEnum import ProgressEnum
+from pkg.hashing.hash import make_hash
 
 AppConfig = Config.load_config()
 def detect_abnormality(
@@ -64,6 +66,7 @@ def _check_PO(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -94,6 +97,17 @@ def _check_PO(path, filename):
             print(not_satisfied[['Vendor ID', 'Vendor Name', 'Created On', 'Business Approved On', 'Business Approval Delay', 'Finance Approved On', 'Finance Approval Delay', 'Treasury Approved On', 'Treasury Approval Delay']])
         else:
             print("All approval delays meet the specified criteria.")
+        os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
+        not_satisfied.to_csv(final_save_path, index=True)
+        fm = FileManager()
+        fm.create_file_record(
+            filename=filename,
+            path=final_save_path,
+            filetype="csv",
+            csv_type=CSVType.OUTPUT,
+            sha256=make_hash(open(final_save_path, "rb").read()),
+            progress=ProgressEnum.PARSED,
+        )
 
     except Exception as e:
         print(f"Error occurred: {e}")
@@ -109,6 +123,7 @@ def _check_invoice(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -137,6 +152,17 @@ def _check_invoice(path, filename):
             print(not_satisfied[['Vendor ID', 'Vendor Name', 'Created On', 'Business Approved on', 'Business Approval Delay', 'Finance Approved on', 'Finance Approval Delay']])
         else:
             print("All approval delays meet the specified criteria.")
+        os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
+        not_satisfied.to_csv(final_save_path, index=True)
+        fm = FileManager()
+        fm.create_file_record(
+            filename=filename,
+            path=final_save_path,
+            filetype="csv",
+            csv_type=CSVType.OUTPUT,
+            sha256=make_hash(open(final_save_path, "rb").read()),
+            progress=ProgressEnum.PARSED,
+        )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
@@ -151,6 +177,7 @@ def _check_vendor(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -175,6 +202,17 @@ def _check_vendor(path, filename):
 
         print("Rows that are not Validated:")
         print(not_validated_rows) 
+        os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
+        not_validated_rows.to_csv(final_save_path, index=True)
+        fm = FileManager()
+        fm.create_file_record(
+            filename=filename,
+            path=final_save_path,
+            filetype="csv",
+            csv_type=CSVType.OUTPUT,
+            sha256=make_hash(open(final_save_path, "rb").read()),
+            progress=ProgressEnum.PARSED,
+        )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
@@ -189,6 +227,7 @@ def _check_payroll(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -210,6 +249,17 @@ def _check_payroll(path, filename):
 
         print("Rows where Loss of Pay doesn't tally:")
         print(mismatch_rows)
+        os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
+        mismatch_rows.to_csv(final_save_path, index=True)
+        fm = FileManager()
+        fm.create_file_record(
+            filename=filename,
+            path=final_save_path,
+            filetype="csv",
+            csv_type=CSVType.OUTPUT,
+            sha256=make_hash(open(final_save_path, "rb").read()),
+            progress=ProgressEnum.PARSED,
+        )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
@@ -221,4 +271,8 @@ def test():
     all_csv_files = fm.read_all_files_by_filetype("csv")
     print("All csv",all_csv_files)
     for i in all_csv_files:
+        if i.csv_type is None:
+            continue
+        if i.csv_type == CSVType.OUTPUT:
+            continue
         detect_abnormality(i.path, i.filename,i.csv_type)

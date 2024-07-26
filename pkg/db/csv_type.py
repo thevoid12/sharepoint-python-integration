@@ -6,3 +6,4 @@ class CSVType(enum.Enum):
     VENDOR = "VENDOR"
     INVOICE = "INVOICE"
     PO = "PO"
+    OUTPUT = "OUTPUT"

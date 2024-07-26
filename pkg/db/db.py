@@ -22,13 +22,16 @@ class FileManager:
         # Create a Session
         self.session = Session()
 
-    def create_file_record(self, path, filename, sha256, progress, filetype):
+    def create_file_record(
+        self, path, filename, sha256, progress, filetype, csv_type=None
+    ):
         new_record = FileRecord(
             path=path,
             filename=filename,
             sha256=sha256,
             progress=progress,
             filetype=filetype,
+            csv_type=csv_type,
         )
         self.session.add(new_record)
         self.session.commit()
