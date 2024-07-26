@@ -95,27 +95,6 @@ def save_file(ctx, file):
     return True
 
 
-def force_download_all_files(ctx, files):
-    """
-    download_all_files
-    This funtion will download all the files in the SharePoint site.
-    Args:
-        ctx: The SharePoint client context object.
-        files: The list of file objects to be downloaded.
-    """
-    try:
-        fileManager = FileManager()
-        for file in files:
-            current_hash = make_hash(
-                File.open_binary(ctx, file.serverRelativeUrl).content
-            )
-            save_file(ctx, file)
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        raise
-    return True
-
-
 def download_all_files(ctx, files):
     """
     download_all_files
@@ -128,6 +107,7 @@ def download_all_files(ctx, files):
 
         fileManager = FileManager()
         for file in files:
+            save_file(ctx, file)
             current_hash = make_hash(
                 File.open_binary(ctx, file.serverRelativeUrl).content
             )
@@ -138,10 +118,8 @@ def download_all_files(ctx, files):
                 db_hash = db_file.sha256
                 if current_hash == db_hash:
                     print(f"File {file.name} is unchanged downloaded")
-                    save_file(ctx, file)
                     continue
                 else:
-                    save_file(ctx, file)
                     file_type = file.name.split(".")[-1]
                     fileManager.update_file_record(
                         fileManager.read_file_record_by_path_and_filename(
@@ -152,7 +130,6 @@ def download_all_files(ctx, files):
                         filetype=file_type,
                     )
             else:
-                save_file(ctx, file)
                 file_type = file.name.split(".")[-1]
                 fileManager.create_file_record(
                     file.parent_collection.parent.serverRelativeUrl,
@@ -180,6 +157,7 @@ def get_changed_files(ctx, files):
         changed_files = []
         fileManager = FileManager()
         for file in files:
+            save_file(ctx, file)
             current_hash = make_hash(
                 File.open_binary(ctx, file.serverRelativeUrl).content
             )
@@ -190,7 +168,6 @@ def get_changed_files(ctx, files):
                 db_hash = db_file.sha256
                 if current_hash != db_hash:
                     changed_files.append(file)
-                    save_file(ctx, file)
                     file_type = file.name.split(".")[-1]
                     fileManager.update_file_record(
                         fileManager.read_file_record_by_path_and_filename(
@@ -202,7 +179,6 @@ def get_changed_files(ctx, files):
                     )
             else:
                 changed_files.append(file)
-                save_file(ctx, file)
                 file_type = file.name.split(".")[-1]
                 fileManager.create_file_record(
                     file.parent_collection.parent.serverRelativeUrl,
@@ -211,7 +187,6 @@ def get_changed_files(ctx, files):
                     ProgressEnum.DOWNLOADED,
                     file_type,
                 )
-
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
