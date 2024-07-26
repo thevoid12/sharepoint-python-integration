@@ -66,7 +66,7 @@ def _check_PO(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
-    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{path}/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -100,14 +100,23 @@ def _check_PO(path, filename):
         os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
         not_satisfied.to_csv(final_save_path, index=True)
         fm = FileManager()
-        fm.create_file_record(
-            filename=filename,
-            path=final_save_path,
-            filetype="csv",
-            csv_type=CSVType.OUTPUT,
-            sha256=make_hash(open(final_save_path, "rb").read()),
-            progress=ProgressEnum.PARSED,
-        )
+        existing_file = fm.read_file_record_by_path_and_filename(f"/out{path}", filename)
+        if existing_file:
+            fm.update_file_record_from_path_name(
+                path=path,
+                filename=f"/out{path}",
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
+        else:
+            fm.create_file_record(
+                filename=filename,
+                path=f"/out{path}",
+                filetype="csv",
+                csv_type=CSVType.OUTPUT,
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
 
     except Exception as e:
         print(f"Error occurred: {e}")
@@ -123,7 +132,7 @@ def _check_invoice(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
-    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{path}/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -155,14 +164,23 @@ def _check_invoice(path, filename):
         os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
         not_satisfied.to_csv(final_save_path, index=True)
         fm = FileManager()
-        fm.create_file_record(
-            filename=filename,
-            path=final_save_path,
-            filetype="csv",
-            csv_type=CSVType.OUTPUT,
-            sha256=make_hash(open(final_save_path, "rb").read()),
-            progress=ProgressEnum.PARSED,
-        )
+        existing_file = fm.read_file_record_by_path_and_filename(f"/out{path}", filename)
+        if existing_file:
+            fm.update_file_record_from_path_name(
+                path=f"/out{path}",
+                filename=filename,
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
+        else:
+            fm.create_file_record(
+                filename=filename,
+                path=f"/out{path}",
+                filetype="csv",
+                csv_type=CSVType.OUTPUT,
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
@@ -177,7 +195,7 @@ def _check_vendor(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
-    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{path}/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -205,14 +223,23 @@ def _check_vendor(path, filename):
         os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
         not_validated_rows.to_csv(final_save_path, index=True)
         fm = FileManager()
-        fm.create_file_record(
-            filename=filename,
-            path=final_save_path,
-            filetype="csv",
-            csv_type=CSVType.OUTPUT,
-            sha256=make_hash(open(final_save_path, "rb").read()),
-            progress=ProgressEnum.PARSED,
-        )
+        existing_file = fm.read_file_record_by_path_and_filename(f"/out{path}", filename)
+        if existing_file:
+            fm.update_file_record_from_path_name(
+                path=f"/out{path}",
+                filename=filename,
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
+        else:
+            fm.create_file_record(
+                filename=filename,
+                path=f"/out{path}",
+                filetype="csv",
+                csv_type=CSVType.OUTPUT,
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
@@ -227,7 +254,7 @@ def _check_payroll(path, filename):
     """
     # fm = FileManager()
     final_path=f"{AppConfig["app"]["downloadDirectory"]}{path}/{filename}"
-    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{filename}"
+    final_save_path=f"{AppConfig["app"]["downloadDirectory"]}/out/{path}/{filename}"
     try:
         print("finalpath",final_path)
         if os.path.exists(final_path):
@@ -252,14 +279,23 @@ def _check_payroll(path, filename):
         os.makedirs(os.path.dirname(final_save_path), exist_ok=True)
         mismatch_rows.to_csv(final_save_path, index=True)
         fm = FileManager()
-        fm.create_file_record(
-            filename=filename,
-            path=final_save_path,
-            filetype="csv",
-            csv_type=CSVType.OUTPUT,
-            sha256=make_hash(open(final_save_path, "rb").read()),
-            progress=ProgressEnum.PARSED,
-        )
+        existing_file = fm.read_file_record_by_path_and_filename(f"/out{path}", filename)
+        if existing_file:
+            fm.update_file_record_from_path_name(
+                path=f"/out{path}",
+                filename=filename,
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
+        else:
+            fm.create_file_record(
+                filename=filename,
+                path=f"/out{path}",
+                filetype="csv",
+                csv_type=CSVType.OUTPUT,
+                sha256=make_hash(open(final_save_path, "rb").read()),
+                progress=ProgressEnum.PARSED,
+            )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise

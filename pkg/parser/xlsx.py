@@ -68,13 +68,24 @@ def convert_to_csv(path, file_name):
                 ProgressEnum.READYTOPARSE,
                 "csv"," has been created successfully."
             )
-            fm.create_file_record(
-                filename=csv_file_path.split('/')[-1],
-                path=(path+"/"+file_name).split('.')[0],
-                sha256=current_hash,
-                progress=ProgressEnum.READYTOPARSE,
-                filetype="csv",
+            existing_file = fm.read_file_record_by_path_and_filename(
+                (path+"/"+file_name).split('.')[0], csv_file_path.split('/')[-1]
             )
+            if existing_file is not None:
+                fm.update_file_record(
+                    existing_file.id,
+                    sha256=current_hash,
+                    progress=ProgressEnum.READYTOPARSE,
+                    filetype="csv",
+                )
+            else:
+                fm.create_file_record(
+                    filename=csv_file_path.split('/')[-1],
+                    path=(path+"/"+file_name).split('.')[0],
+                    sha256=current_hash,
+                    progress=ProgressEnum.READYTOPARSE,
+                    filetype="csv",
+                )
     except Exception as e:
         print(f"Error occurred: {e}")
         raise
