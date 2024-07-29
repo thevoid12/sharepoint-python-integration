@@ -52,3 +52,9 @@ def auth():
     except Exception as e:
         logging.error("Error occurred: %s", e)
         raise
+
+
+
+def teslog():
+    logging.error("this is a test error log in auth.py file")
+    return 

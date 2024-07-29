@@ -9,12 +9,13 @@
   "sharepointauth": {
     "authType": 0,
     "siteUrl": "https://auditcuetechnologies.sharepoint.com/sites/NAF",
-    "clientID": "a424899c-0a2c-4ed2-a666-49496d25b5d6",
+    "clientID": "",
     "thumbPrint": "",
     "certificatePath": "/Users/void/Documents/certificates/sharepointcertificate.crt",
     "docRelativeUrl": "/sites/NAF/Shared Documents"
   },
   "app": {
-    "downloadDirectory": "/Users/void/Documents/repo/acuet/acuetransfer/tmp"
+    "downloadDirectory": "/Users/void/Documents/repo/acuet/acuetransfer/tmp",
+    "logfilepath": "../applogs.txt"
   }
 }

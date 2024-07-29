@@ -18,6 +18,8 @@ import pkg.sharepoint.auth as spauth
 import pkg.sharepoint.sharepoint_api as spapi
 from pkg.parser.csv import detect_abnormality
 from pkg.parser.xlsx import convert_to_csv, find_csv_type
+from logger import logger as log
+import logging
 import time
 
 
@@ -28,6 +30,7 @@ def main():
     and starts the main processes or functions.
 
     """
+    log.initiate_logger()
     ctx = spauth.auth()
     all_files = spapi.list_all_files(ctx)
     spapi.download_all_files(ctx, all_files)
@@ -56,6 +59,10 @@ def main():
     print(
         "Your files are parsed and checked for abnormalities. Check the output folder for the results."
     )
+    logging.debug("this is a debug test log in main file")
+    logging.error("this is a error test log in main file")
+    spauth.teslog()
+    
     return
 
 
