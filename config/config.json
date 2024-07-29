@@ -15,7 +15,7 @@
     "docRelativeUrl": "/sites/NAF/Shared Documents"
   },
   "app": {
-    "downloadDirectory": "/Users/void/Documents/repo/acuet/acuetransfer/tmp",
+    "downloadDirectory": "/Users/Vedant/Documents/Python/sharepoint-python-integration/tmp",
     "logfilepath": "../applogs.txt"
   }
 }

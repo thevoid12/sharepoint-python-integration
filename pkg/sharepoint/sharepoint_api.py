@@ -89,6 +89,11 @@ def save_file(ctx, file):
         with open(file_dir_path, "wb") as f:
             f.write(file_obj)
         print(f"File {file.serverRelativeUrl} saved successfully")
+    except OSError as e:
+        print(
+            f"OS Error occurred: This might be beacase there are permission issues {e}"
+        )
+        raise
     except Exception as e:
         print(f"Error occurred: {e}")
         raise

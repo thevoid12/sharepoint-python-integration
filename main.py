@@ -39,8 +39,13 @@ def main():
     all_xlsx_files = fm.read_all_files_by_filetype("xlsx")
     print("All xlsx files:", all_xlsx_files)
     for i in all_xlsx_files:
-        convert_to_csv(i.path, i.filename)
-        print(f"{i.path}\t{i.filename}\t{i.csv_type}")
+        try:
+            convert_to_csv(i.path, i.filename)
+        except Exception as e:
+            print(
+                f"Error occurred: {e} has occured while converting {i.path} {i.filename}."
+            )
+        print(f"{i.path}\t{i.filename}\t{i.csv_type} has been converted.")
     all_csv_files = fm.read_all_files_by_filetype("csv")
     print(all_csv_files)
     for i in all_csv_files:

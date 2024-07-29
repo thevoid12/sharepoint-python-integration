@@ -144,15 +144,20 @@ def find_csv_type(path, file_name):
 
 def test():
     fm=FileManager()
-    all_xlsx_files = fm.read_all_files_by_filetype("xlsx")
-    print("All xlsx files:", all_xlsx_files)
-    for i in all_xlsx_files:
-        convert_to_csv(i.path, i.filename)
-        print(f"{i.path}\t{i.filename}\t{i.csv_type}")
-    all_csv_files = fm.read_all_files_by_filetype("csv")
-    print(all_csv_files)
-    for i in all_csv_files:
-        find_csv_type(i.path, i.filename)
-        print(f"{i.path}\t{i.filename}\t{i.csv_type}")
+    try:
+
+        all_xlsx_files = fm.read_all_files_by_filetype("xlsx")
+        print("All xlsx files:", all_xlsx_files)
+        for i in all_xlsx_files:
+            convert_to_csv(i.path, i.filename)
+            print(f"{i.path}\t{i.filename}\t{i.csv_type}")
+        all_csv_files = fm.read_all_files_by_filetype("csv")
+        print(all_csv_files)
+        for i in all_csv_files:
+            find_csv_type(i.path, i.filename)
+            print(f"{i.path}\t{i.filename}\t{i.csv_type}")
+    except:
+        print("Error occurred")
+        raise
 if __name__ == "__main__":
     read_file("/sites/NAF/Shared Documents/","Book.xlsx")
