@@ -7,6 +7,7 @@ Excel files, convert them to csv files, and extract data for analysis.
 import openpyxl
 import os
 import csv
+import logging
 from config.config_loader import Config
 from pkg.db.db import FileManager
 from pkg.db.progressEnum import ProgressEnum
@@ -29,9 +30,9 @@ def read_file(path, file_name):
         sheet = wb.active
         for row in sheet.iter_rows():
             for cell in row:
-                print(cell.value)
+                logging.info(cell.value)
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred: {e}")
         raise
     return True
 
@@ -44,7 +45,7 @@ def convert_to_csv(path, file_name):
     file_name: The name of the file.
     """
     final_path = f"{AppConfig["app"]["downloadDirectory"]}/{path}/{file_name}"
-    print(f"Converting {final_path} to CSV...")
+    logging.info(f"Converting {final_path} to CSV...")
     os.makedirs(final_path.split('.')[0], exist_ok=True)
     try:
         wb = openpyxl.load_workbook(final_path,data_only=True)
@@ -61,7 +62,7 @@ def convert_to_csv(path, file_name):
             with open(csv_file_path, "rb") as csv_file:
                 current_hash = make_hash(csv_file.read())
             
-            print(
+            logging.info(
                 (path+"/"+file_name).split('.')[0],
                 csv_file_path.split('/')[-1],
                 current_hash,
@@ -87,7 +88,7 @@ def convert_to_csv(path, file_name):
                     filetype="csv",
                 )
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred: {e}")
         raise
     return True
 
@@ -105,7 +106,7 @@ def find_csv_type(path, file_name):
         primary_filename = path.split('/')[-1]
         if primary_filename == "Payroll Validation":
             existing_file = fm.read_file_record_by_path_and_filename(path, file_name)
-            print(existing_file)
+            logging.debug(existing_file)
             if existing_file.csv_type== CSVType.OUTPUT: return True
             fm.update_file_record_from_path_name(
                 path=path,
@@ -114,7 +115,7 @@ def find_csv_type(path, file_name):
             )
         if primary_filename == "Vendor Document Checklist":
             existing_file = fm.read_file_record_by_path_and_filename(path, file_name)
-            print(existing_file)
+            logging.debug(existing_file)
             if existing_file.csv_type== CSVType.OUTPUT: return True            
             fm.update_file_record_from_path_name(
                 path=path,
@@ -123,7 +124,7 @@ def find_csv_type(path, file_name):
             )
         if primary_filename == "PO and Invoice Workflow data":
             existing_file = fm.read_file_record_by_path_and_filename(path, file_name)
-            print(existing_file)
+            logging.debug(existing_file)
             if existing_file.csv_type== CSVType.OUTPUT: return True
             if file_name == "PO.csv":
                 fm.update_file_record_from_path_name(
@@ -138,7 +139,7 @@ def find_csv_type(path, file_name):
                     csv_type=CSVType.INVOICE
                 )
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred: {e}")
         raise
     return True
 
@@ -147,17 +148,17 @@ def test():
     try:
 
         all_xlsx_files = fm.read_all_files_by_filetype("xlsx")
-        print("All xlsx files:", all_xlsx_files)
+        logging.info("All xlsx files:", all_xlsx_files)
         for i in all_xlsx_files:
             convert_to_csv(i.path, i.filename)
-            print(f"{i.path}\t{i.filename}\t{i.csv_type}")
+            logging.info(f"{i.path}\t{i.filename}\t{i.csv_type} has been converted.")
         all_csv_files = fm.read_all_files_by_filetype("csv")
-        print(all_csv_files)
+        logging.debug(all_csv_files)
         for i in all_csv_files:
             find_csv_type(i.path, i.filename)
-            print(f"{i.path}\t{i.filename}\t{i.csv_type}")
+            logging.info(f"{i.path}\t{i.filename}\t{i.csv_type} finding csv type")
     except:
-        print("Error occurred")
+        logging.error("Error occurred")
         raise
 if __name__ == "__main__":
     read_file("/sites/NAF/Shared Documents/","Book.xlsx")

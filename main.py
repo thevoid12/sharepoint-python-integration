@@ -34,40 +34,42 @@ def main():
     ctx = spauth.auth()
     all_files = spapi.list_all_files(ctx)
     spapi.download_all_files(ctx, all_files)
-    print(spapi.get_changed_files(ctx, all_files))
+    logging.debug(spapi.get_changed_files(ctx, all_files))
     fm = FileManager()
     all_xlsx_files = fm.read_all_files_by_filetype("xlsx")
-    print("All xlsx files:", all_xlsx_files)
+    logging.debug("All xlsx files:", all_xlsx_files)
     for i in all_xlsx_files:
         try:
             convert_to_csv(i.path, i.filename)
         except Exception as e:
-            print(
+            logging.error(
                 f"Error occurred: {e} has occured while converting {i.path} {i.filename}."
             )
-        print(f"{i.path}\t{i.filename}\t{i.csv_type} has been converted.")
+        logging.info(f"{i.path}\t{i.filename}\t{i.csv_type} has been converted.")
     all_csv_files = fm.read_all_files_by_filetype("csv")
-    print(all_csv_files)
+    logging.debug(all_csv_files)
     for i in all_csv_files:
         find_csv_type(i.path, i.filename)
-        print(f"{i.path}\t{i.filename}\t{i.csv_type}")
+        logging.debug(f"{i.path}\t{i.filename}\t{i.csv_type}")
     new_fm = FileManager()
     new_csv = new_fm.read_all_files_by_filetype("csv")
-    print(f"All {len(new_csv)}csv", new_csv)
+    logging.debug(f"All {len(new_csv)}csv", new_csv)
     for i in new_csv:
-        print(i.path, i.filename, i.csv_type)
         if i.csv_type is None:
             continue
+        else:
+            logging.info(i.path, i.filename, i.csv_type, "Detecting abnormalities...")
         if i.csv_type == CSVType.OUTPUT:
             continue
+
         detect_abnormality(i.path, i.filename, i.csv_type)
-    print(
+    logging.info(
         "Your files are parsed and checked for abnormalities. Check the output folder for the results."
     )
     logging.debug("this is a debug test log in main file")
     logging.error("this is a error test log in main file")
     spauth.teslog()
-    
+
     return
 
 

@@ -21,6 +21,7 @@ from config.config_loader import Config
 from pkg.hashing.hash import make_hash
 from pkg.db.db import FileManager
 from pkg.db.progressEnum import ProgressEnum
+import logging
 
 AppConfig: Dict[str, Any] = Config.load_config()
 
@@ -36,7 +37,7 @@ def list_all_folders(ctx):
     root_folder = ctx.web.get_folder_by_server_relative_url(relative_url)
     root_folder.expand(["Files", "Folders"]).get().execute_query()
     for files in root_folder.files:
-        print(files)
+        logging.info(files)
 
 
 def list_all_files(ctx):
@@ -61,7 +62,7 @@ def list_all_files(ctx):
             while len(current_folder_folders) > 0:
                 folders.append(current_folder_folders.pop())
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred: {e}")
         raise
     return files
 
@@ -88,14 +89,14 @@ def save_file(ctx, file):
         os.makedirs(os.path.dirname(file_dir_path), exist_ok=True)
         with open(file_dir_path, "wb") as f:
             f.write(file_obj)
-        print(f"File {file.serverRelativeUrl} saved successfully")
+        logging.info(f"File {file.serverRelativeUrl} saved successfully")
     except OSError as e:
-        print(
+        logging.error(
             f"OS Error occurred: This might be beacase there are permission issues {e}"
         )
         raise
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred: {e}")
         raise
     return True
 
@@ -122,7 +123,7 @@ def download_all_files(ctx, files):
             if db_file is not None:
                 db_hash = db_file.sha256
                 if current_hash == db_hash:
-                    print(f"File {file.name} is unchanged downloaded")
+                    logging.info(f"File {file.name} is unchanged downloaded")
                     continue
                 else:
                     file_type = file.name.split(".")[-1]
@@ -145,7 +146,7 @@ def download_all_files(ctx, files):
                 )
 
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred: {e}")
         raise
     return True
 
@@ -193,6 +194,6 @@ def get_changed_files(ctx, files):
                     file_type,
                 )
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred: {e}")
         raise
     return changed_files
